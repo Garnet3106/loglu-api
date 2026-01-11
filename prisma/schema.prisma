@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client"
+  output = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id      Int     @id @default(autoincrement())
+  fbUid   String  @unique
+  email   String  @unique
+  name    String
+  memos   Memo[]
+}
+
+model Memo {
+  id              Int       @id @default(autoincrement())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  editedAt        DateTime
+  date            DateTime
+  owner           User      @relation(fields: [ownerId], references: [id])
+  ownerId         Int
+  title           String
+  contentPreview  String
+
+  @@index([date, ownerId])
+}
