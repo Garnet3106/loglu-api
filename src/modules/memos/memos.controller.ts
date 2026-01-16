@@ -1,12 +1,31 @@
-import { Controller, Get } from '@nestjs/common';
-import { MemosService } from './memos.service';
+import { Body, Controller, Get, Headers, Post, UseGuards } from '@nestjs/common';
+import { MemosService } from '@src/modules/memos/memos.service';
+import { AuthGuard } from '@src/modules/auth/auth.guard';
+import { CreateMemoDto, FindMemoDto } from './memos.dto';
+import { getUser, validateAuthState } from '@src/auth';
 
 @Controller('memos')
+@UseGuards(AuthGuard)
 export class MemosController {
   constructor(private readonly memosService: MemosService) {}
 
   @Get()
-  find() {
-    return this.memosService.find();
+  async find(
+    @Headers('authorization') bearerToken: string,
+    @Body() dto: FindMemoDto,
+  ) {
+    const idToken = await validateAuthState(bearerToken);
+    const user = await getUser(idToken.uid);
+    return await this.memosService.find(dto, user);
+  }
+
+  @Post()
+  async create(
+    @Headers('authorization') bearerToken: string,
+    @Body() dto: CreateMemoDto,
+  ) {
+    const idToken = await validateAuthState(bearerToken);
+    const user = await getUser(idToken.uid);
+    return await this.memosService.create(dto, user);
   }
 }

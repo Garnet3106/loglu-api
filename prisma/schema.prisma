@@ -1,6 +1,7 @@
 generator client {
   provider = "prisma-client"
   output = "../src/generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
@@ -19,12 +20,19 @@ model Memo {
   id              Int       @id @default(autoincrement())
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
-  editedAt        DateTime
+  editedAt        DateTime  @default(now())
   date            DateTime
   owner           User      @relation(fields: [ownerId], references: [id])
   ownerId         Int
   title           String
+  contents        MemoContent[]
   contentPreview  String
 
   @@index([date, ownerId])
+}
+
+model MemoContent {
+  memo    Memo    @relation(fields: [memoId], references: [id], onDelete: Cascade)
+  memoId  Int     @id
+  content String
 }
