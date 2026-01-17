@@ -5,13 +5,21 @@ import { User } from '@src/users/user.dto';
 
 @Injectable()
 export class MemosService {
-  async find(dto: FindMemoDto, user: User) {
-    return await prisma.memo.findMany({
+  async find(dto: FindMemoDto, user: User): Promise<object> {
+    const memos = await prisma.memo.findMany({
       orderBy: { date: 'desc' },
       skip: dto.offset,
       take: dto.limit,
       where: { ownerId: user.id },
     });
+    return memos.map((memo) => ({
+      id: memo.id,
+      createdAt: memo.createdAt,
+      editedAt: memo.editedAt,
+      title: memo.title,
+      previewContent: memo.contentPreview,
+      hashtags: [], // fix
+    }));
   }
 
   async create(dto: CreateMemoDto, user: User) {
