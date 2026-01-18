@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { CreateMemoDto, FindMemoDto, MemoDto } from '@src/modules/memos/memos.dto';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpError } from '@src/exceptions/exception';
+import { CreateMemoDto, FindMemoDto, MemoDto, UpdateMemoDto } from '@src/modules/memos/memos.dto';
 import { prisma } from '@src/prisma';
 import { User } from '@src/users/user.dto';
 
@@ -16,7 +17,7 @@ export class MemosService {
     return memos.map((memo) => MemosService.generateMemo(memo));
   }
 
-  async create(dto: CreateMemoDto, user: User) {
+  async create(dto: CreateMemoDto, user: User): Promise<MemoDto> {
     const memo = await prisma.memo.create({
       data: {
         date: new Date(dto.date),
@@ -38,6 +39,39 @@ export class MemosService {
         },
         content: dto.content,
       },
+      include: { hashtags: true },
+    });
+    return MemosService.generateMemo(memo);
+  }
+
+  async update(dto: UpdateMemoDto, user: User): Promise<MemoDto> {
+    const count = await prisma.memo.count({
+      where: { id: dto.id, ownerId: user.id },
+    });
+    if (count === 0) {
+      throw new HttpError(HttpStatus.BAD_REQUEST, 'specified memo id not found');
+    }
+    const memo = await prisma.memo.update({
+      data: {
+        date: new Date(dto.date),
+        title: dto.title,
+        hashtags: {
+          connectOrCreate: dto.hashtags.map((name) => ({
+            where: {
+              ownerId_name: {
+                ownerId: user.id,
+                name,
+              },
+            },
+            create: {
+              ownerId: user.id,
+              name,
+            },
+          })),
+        },
+        content: dto.content,
+      },
+      where: { id: dto.id, ownerId: user.id },
       include: { hashtags: true },
     });
     return MemosService.generateMemo(memo);

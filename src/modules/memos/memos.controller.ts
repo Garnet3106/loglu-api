@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Headers, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Put, UseGuards } from '@nestjs/common';
 import { MemosService } from '@src/modules/memos/memos.service';
 import { AuthGuard } from '@src/modules/auth/auth.guard';
-import { CreateMemoDto, FindMemoDto } from './memos.dto';
+import { CreateMemoDto, FindMemoDto, UpdateMemoDto } from './memos.dto';
 import { getUser, validateAuthState } from '@src/auth';
 
 @Controller('memos')
@@ -27,5 +27,15 @@ export class MemosController {
     const idToken = await validateAuthState(bearerToken);
     const user = await getUser(idToken.uid);
     return await this.memosService.create(dto, user);
+  }
+
+  @Put()
+  async update(
+    @Headers('authorization') bearerToken: string,
+    @Body() dto: UpdateMemoDto,
+  ) {
+    const idToken = await validateAuthState(bearerToken);
+    const user = await getUser(idToken.uid);
+    return await this.memosService.update(dto, user);
   }
 }

@@ -42,3 +42,25 @@ export class CreateMemoDto {
   @IsString()
   content: string;
 }
+
+export class UpdateMemoDto {
+  @IsNotEmpty()
+  @IsNumber()
+  id: number;
+
+  @IsNotEmpty()
+  @IsDateString()
+  date: string;
+
+  @IsNotEmpty()
+  @IsString()
+  title: string;
+
+  @IsNotEmpty()
+  @IsString({ each: true })
+  hashtags: string[];
+
+  @IsNotEmpty()
+  @IsString()
+  content: string;
+}
