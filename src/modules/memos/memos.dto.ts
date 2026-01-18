@@ -1,5 +1,20 @@
 import { IsDateString, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
+export class MemoDto {
+  id: number;
+  createdAt: Date;
+  editedAt: Date;
+  date: Date;
+  title: String;
+  content: String;
+  hashtags: HashTagDto[];
+}
+
+export class HashTagDto {
+  id: number;
+  name: string;
+}
+
 export class FindMemoDto {
   @IsNotEmpty()
   @IsNumber()
@@ -18,6 +33,10 @@ export class CreateMemoDto {
   @IsNotEmpty()
   @IsString()
   title: string;
+
+  @IsNotEmpty()
+  @IsString({ each: true })
+  hashtags: string[];
 
   @IsNotEmpty()
   @IsString()

@@ -9,11 +9,12 @@ datasource db {
 }
 
 model User {
-  id      Int     @id @default(autoincrement())
-  fbUid   String  @unique
-  email   String  @unique
-  name    String
-  memos   Memo[]
+  id              Int     @id @default(autoincrement())
+  fbUid           String  @unique
+  email           String  @unique
+  name            String
+  memos           Memo[]
+  hashtags        Hashtag[]
 }
 
 model Memo {
@@ -25,14 +26,18 @@ model Memo {
   owner           User      @relation(fields: [ownerId], references: [id])
   ownerId         Int
   title           String
-  contents        MemoContent[]
-  contentPreview  String
+  hashtags        Hashtag[]
+  content         String
 
   @@index([date, ownerId])
 }
 
-model MemoContent {
-  memo    Memo    @relation(fields: [memoId], references: [id], onDelete: Cascade)
-  memoId  Int     @id
-  content String
+model Hashtag {
+  id              Int       @id @default(autoincrement())
+  owner           User      @relation(fields: [ownerId], references: [id])
+  ownerId         Int
+  name            String
+  memos           Memo[]
+
+  @@unique([ownerId, name])
 }
