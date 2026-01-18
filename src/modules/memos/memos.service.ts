@@ -3,6 +3,7 @@ import { HttpError } from '@src/exceptions/exception';
 import { CreateMemoDto, FindMemoDto, MemoDto, UpdateMemoDto } from '@src/modules/memos/memos.dto';
 import { prisma } from '@src/prisma';
 import { User } from '@src/users/user.dto';
+import { HashtagsService } from '../hashtags/hashtags.service';
 
 @Injectable()
 export class MemosService {
@@ -41,6 +42,10 @@ export class MemosService {
       },
       include: { hashtags: true },
     });
+    await prisma.hashtag.updateMany({
+      where: { ownerId: user.id, name: { in: dto.hashtags } },
+      data: { referredAt: new Date() },
+    });
     return MemosService.generateMemo(memo);
   }
 
@@ -74,6 +79,10 @@ export class MemosService {
       where: { id: dto.id, ownerId: user.id },
       include: { hashtags: true },
     });
+    await prisma.hashtag.updateMany({
+      where: { ownerId: user.id, name: { in: dto.hashtags } },
+      data: { referredAt: new Date() },
+    });
     return MemosService.generateMemo(memo);
   }
 
@@ -85,7 +94,7 @@ export class MemosService {
       date: memo.date,
       title: memo.title,
       content: memo.content,
-      hashtags: memo.hashtags,
+      hashtags: memo.hashtags.map((hashtag: any) => HashtagsService.generateHashtag(hashtag)),
     };
   }
 }

@@ -10,6 +10,8 @@ datasource db {
 
 model User {
   id              Int     @id @default(autoincrement())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
   fbUid           String  @unique
   email           String  @unique
   name            String
@@ -34,10 +36,14 @@ model Memo {
 
 model Hashtag {
   id              Int       @id @default(autoincrement())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  referredAt      DateTime  @default(now())
   owner           User      @relation(fields: [ownerId], references: [id])
   ownerId         Int
   name            String
   memos           Memo[]
 
   @@unique([ownerId, name])
+  @@index([referredAt])
 }

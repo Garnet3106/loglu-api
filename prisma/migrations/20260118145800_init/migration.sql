@@ -1,6 +1,8 @@
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
     "fbUid" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -18,7 +20,6 @@ CREATE TABLE "Memo" (
     "ownerId" INTEGER NOT NULL,
     "title" TEXT NOT NULL,
     "content" TEXT NOT NULL,
-    "contentPreview" TEXT NOT NULL,
 
     CONSTRAINT "Memo_pkey" PRIMARY KEY ("id")
 );
@@ -26,6 +27,9 @@ CREATE TABLE "Memo" (
 -- CreateTable
 CREATE TABLE "Hashtag" (
     "id" SERIAL NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "referredAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "ownerId" INTEGER NOT NULL,
     "name" TEXT NOT NULL,
 
@@ -50,7 +54,7 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE INDEX "Memo_date_ownerId_idx" ON "Memo"("date", "ownerId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Hashtag_name_key" ON "Hashtag"("name");
+CREATE UNIQUE INDEX "Hashtag_ownerId_name_key" ON "Hashtag"("ownerId", "name");
 
 -- CreateIndex
 CREATE INDEX "_HashtagToMemo_B_index" ON "_HashtagToMemo"("B");
