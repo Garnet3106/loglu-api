@@ -1,4 +1,4 @@
-import { IsDateString, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class MemoDto {
   id: number;
@@ -24,6 +24,7 @@ export class FindMemoDto {
   @IsNumber()
   limit: number;
 
+  @IsOptional()
   @IsString()
   hashtag?: string;
 }
