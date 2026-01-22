@@ -23,6 +23,9 @@ export class FindMemoDto {
   @IsNotEmpty()
   @IsNumber()
   limit: number;
+
+  @IsString()
+  hashtag?: string;
 }
 
 export class CreateMemoDto {

@@ -12,7 +12,10 @@ export class MemosService {
       orderBy: { date: 'desc' },
       skip: dto.offset,
       take: dto.limit,
-      where: { ownerId: user.id },
+      where: {
+        ownerId: user.id,
+        hashtags: dto.hashtag ? { some: { name: dto.hashtag } } : undefined,
+      },
       include: { hashtags: true },
     });
     return memos.map((memo) => MemosService.generateMemo(memo));

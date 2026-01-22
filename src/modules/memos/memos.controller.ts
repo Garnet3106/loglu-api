@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Patch, Post, UseGuards } from '@nestjs/common';
 import { MemosService } from '@src/modules/memos/memos.service';
 import { AuthGuard } from '@src/modules/auth/auth.guard';
 import { CreateMemoDto, FindMemoDto, UpdateMemoDto } from './memos.dto';
@@ -29,7 +29,7 @@ export class MemosController {
     return await this.memosService.create(dto, user);
   }
 
-  @Put()
+  @Patch()
   async update(
     @Headers('authorization') bearerToken: string,
     @Body() dto: UpdateMemoDto,
