@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { prisma } from '@src/prisma';
-import { User } from '@src/users/user.dto';
+import { User } from '@src/modules/users/user.dto';
 import { HashtagDto } from './hashtag.dto';
 
 @Injectable()

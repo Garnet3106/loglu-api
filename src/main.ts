@@ -1,6 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from '@src/app.module';
+import { AppModule } from '@src/modules/app/app.module';
 import 'dotenv/config';
 import { HttpExceptionsFilter } from './exceptions/exceptions.filter';
 

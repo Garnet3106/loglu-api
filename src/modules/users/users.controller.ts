@@ -1,6 +1,6 @@
 import { Controller, Headers, HttpStatus, Post } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { validateAuthState, verifyFirebaseIdToken } from '@src/auth';
+import { UsersService } from '@src/modules/users/users.service';
+import { validateAuthState } from '@src/auth';
 import { HttpError } from '@src/exceptions/exception';
 
 @Controller('users')

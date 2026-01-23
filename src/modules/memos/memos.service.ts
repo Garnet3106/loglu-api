@@ -2,7 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { HttpError } from '@src/exceptions/exception';
 import { CreateMemoDto, FindMemoDto, MemoDto, UpdateMemoDto } from '@src/modules/memos/memos.dto';
 import { prisma } from '@src/prisma';
-import { User } from '@src/users/user.dto';
+import { User } from '@src/modules/users/user.dto';
 import { HashtagsService } from '../hashtags/hashtags.service';
 
 @Injectable()
