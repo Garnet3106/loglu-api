@@ -16,6 +16,7 @@ model User {
   email           String  @unique
   name            String
   memos           Memo[]
+  bookmarks       Bookmark[]
   hashtags        Hashtag[]
 }
 
@@ -30,8 +31,25 @@ model Memo {
   title           String
   hashtags        Hashtag[]
   content         String
+  bookmarks       Bookmark[]
 
-  @@index([date, ownerId])
+  @@index([editedAt, date, ownerId])
+}
+
+model Bookmark {
+  id              Int       @id @default(autoincrement())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  editedAt        DateTime  @default(now())
+  owner           User      @relation(fields: [ownerId], references: [id])
+  ownerId         Int
+  title           String
+  hashtags        Hashtag[]
+  url             String
+  thumbnailUrl    String?
+  memos           Memo[]
+
+  @@index([editedAt])
 }
 
 model Hashtag {
@@ -43,6 +61,7 @@ model Hashtag {
   ownerId         Int
   name            String
   memos           Memo[]
+  bookmarks       Bookmark[]
 
   @@unique([ownerId, name])
   @@index([referredAt])

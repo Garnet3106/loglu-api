@@ -1,21 +1,17 @@
 import { IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Hashtag } from '@src/generated/prisma/client';
 
-export class MemoDto {
+export class BookmarkDto {
   id: number;
   createdAt: Date;
   editedAt: Date;
-  date: Date;
-  title: String;
-  content: String;
-  hashtags: HashTagDto[];
+  title: string;
+  hashtags: Hashtag[];
+  url: string;
+  thumbnailUrl: string;
 }
 
-export class HashTagDto {
-  id: number;
-  name: string;
-}
-
-export class FindMemoDto {
+export class FindBookmarkDto {
   @IsNotEmpty()
   @IsNumber()
   offset: number;
@@ -29,11 +25,7 @@ export class FindMemoDto {
   hashtag?: string;
 }
 
-export class CreateMemoDto {
-  @IsNotEmpty()
-  @IsDateString()
-  date: string;
-
+export class CreateBookmarkDto {
   @IsNotEmpty()
   @IsString()
   title: string;
@@ -44,10 +36,14 @@ export class CreateMemoDto {
 
   @IsNotEmpty()
   @IsString()
-  content: string;
+  url: string;
+
+  @IsOptional()
+  @IsString()
+  thumbnailUrl: string;
 }
 
-export class UpdateMemoDto {
+export class UpdateBookmarkDto {
   @IsNotEmpty()
   @IsNumber()
   id: number;
@@ -57,10 +53,6 @@ export class UpdateMemoDto {
   editedAt: string;
 
   @IsNotEmpty()
-  @IsDateString()
-  date: string;
-
-  @IsNotEmpty()
   @IsString()
   title: string;
 
@@ -70,5 +62,9 @@ export class UpdateMemoDto {
 
   @IsNotEmpty()
   @IsString()
-  content: string;
+  url: string;
+
+  @IsOptional()
+  @IsString()
+  thumbnailUrl: string;
 }

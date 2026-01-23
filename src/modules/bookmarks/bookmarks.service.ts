@@ -1,15 +1,15 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { HttpError } from '@src/exceptions/exception';
-import { CreateMemoDto, FindMemoDto, MemoDto, UpdateMemoDto } from '@src/modules/memos/memos.dto';
+import { BookmarkDto, CreateBookmarkDto, FindBookmarkDto, UpdateBookmarkDto } from './bookmarks.dto';
+import { User } from '../users/user.dto';
 import { prisma } from '@src/prisma';
-import { User } from '@src/modules/users/user.dto';
+import { HttpError } from '@src/exceptions/exception';
 import { HashtagsService } from '../hashtags/hashtags.service';
 
 @Injectable()
-export class MemosService {
-  async find(dto: FindMemoDto, user: User): Promise<MemoDto[]> {
-    const memos = await prisma.memo.findMany({
-      orderBy: { date: 'desc' },
+export class BookmarksService {
+  async find(dto: FindBookmarkDto, user: User): Promise<BookmarkDto[]> {
+    const bookmarks = await prisma.bookmark.findMany({
+      orderBy: { createdAt: 'desc' },
       skip: dto.offset,
       take: dto.limit,
       where: {
@@ -18,13 +18,12 @@ export class MemosService {
       },
       include: { hashtags: true },
     });
-    return memos.map((memo) => MemosService.generateMemo(memo));
+    return bookmarks.map((bookmark) => BookmarksService.generateBookmark(bookmark));
   }
 
-  async create(dto: CreateMemoDto, user: User): Promise<MemoDto> {
-    const memo = await prisma.memo.create({
+  async create(dto: CreateBookmarkDto, user: User): Promise<BookmarkDto> {
+    const bookmark = await prisma.bookmark.create({
       data: {
-        date: new Date(dto.date),
         ownerId: user.id,
         title: dto.title,
         hashtags: {
@@ -41,7 +40,8 @@ export class MemosService {
             },
           })),
         },
-        content: dto.content,
+        url: dto.url,
+        thumbnailUrl: dto.thumbnailUrl,
       },
       include: { hashtags: true },
     });
@@ -49,20 +49,19 @@ export class MemosService {
       where: { ownerId: user.id, name: { in: dto.hashtags } },
       data: { referredAt: new Date() },
     });
-    return MemosService.generateMemo(memo);
+    return BookmarksService.generateBookmark(bookmark);
   }
 
-  async update(dto: UpdateMemoDto, user: User): Promise<MemoDto> {
-    const count = await prisma.memo.count({
+  async update(dto: UpdateBookmarkDto, user: User): Promise<BookmarkDto> {
+    const count = await prisma.bookmark.count({
       where: { id: dto.id, ownerId: user.id },
     });
     if (count === 0) {
-      throw new HttpError(HttpStatus.BAD_REQUEST, 'specified memo id not found');
+      throw new HttpError(HttpStatus.BAD_REQUEST, 'specified bookmark id not found');
     }
-    const memo = await prisma.memo.update({
+    const bookmark = await prisma.bookmark.update({
       data: {
         editedAt: new Date(dto.editedAt),
-        date: new Date(dto.date),
         title: dto.title,
         hashtags: {
           connectOrCreate: dto.hashtags.map((name) => ({
@@ -78,7 +77,8 @@ export class MemosService {
             },
           })),
         },
-        content: dto.content,
+        url: dto.url,
+        thumbnailUrl: dto.thumbnailUrl,
       },
       where: { id: dto.id, ownerId: user.id },
       include: { hashtags: true },
@@ -87,18 +87,18 @@ export class MemosService {
       where: { ownerId: user.id, name: { in: dto.hashtags } },
       data: { referredAt: new Date() },
     });
-    return MemosService.generateMemo(memo);
+    return BookmarksService.generateBookmark(bookmark);
   }
 
-  static generateMemo(memo: any): MemoDto {
+  static generateBookmark(bookmark: any): BookmarkDto {
     return {
-      id: memo.id,
-      createdAt: memo.createdAt,
-      editedAt: memo.editedAt,
-      date: memo.date,
-      title: memo.title,
-      hashtags: memo.hashtags.map((hashtag: any) => HashtagsService.generateHashtag(hashtag)),
-      content: memo.content,
+      id: bookmark.id,
+      createdAt: bookmark.createdAt,
+      editedAt: bookmark.editedAt,
+      title: bookmark.title,
+      hashtags: bookmark.hashtags.map((hashtag: any) => HashtagsService.generateHashtag(hashtag)),
+      url: bookmark.url,
+      thumbnailUrl: bookmark.thumbnailUrl,
     };
   }
 }
