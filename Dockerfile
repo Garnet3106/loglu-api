@@ -11,6 +11,7 @@ RUN apt-get update \
     && npm i -g n \
     && n stable \
     && npm install \
-    && npx prisma generate
+    && npx prisma generate \
+    && npm run build
 
 CMD ["bash", "-c", "chmod +x ./deploy/startup.sh && ./deploy/startup.sh"]

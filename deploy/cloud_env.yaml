@@ -1,1 +1,3 @@
 API_PORT: "8080"
+FIREBASE_PROJECT_ID: "loglu-app"
+FIREBASE_CLIENT_EMAIL: "firebase-adminsdk-fbsvc@loglu-app.iam.gserviceaccount.com"

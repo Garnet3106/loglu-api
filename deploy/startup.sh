@@ -1,4 +1,4 @@
 # !/bin/bash
 
 npx prisma migrate deploy
-npx tsx src/index.ts
+npm run start:prod
