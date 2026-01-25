@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { CreateBookmarkDto, FindBookmarkDto, UpdateBookmarkDto } from './bookmarks.dto';
 import { getUser, validateAuthState } from '@src/auth';
@@ -12,10 +12,13 @@ export class BookmarksController {
   @Get()
   async find(
     @Headers('authorization') bearerToken: string,
-    @Body() dto: FindBookmarkDto,
+    @Query('offset') offset: number,
+    @Query('limit') limit: number,
+    @Query('hashtag') hashtag?: string,
   ) {
     const idToken = await validateAuthState(bearerToken);
     const user = await getUser(idToken.uid);
+    const dto = new FindBookmarkDto(offset, limit, hashtag);
     return await this.bookmarksService.find(dto, user);
   }
 

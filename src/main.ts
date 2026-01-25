@@ -6,7 +6,7 @@ import { HttpExceptionsFilter } from './exceptions/exceptions.filter';
 
 async function main() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalFilters(new HttpExceptionsFilter());
   await app.listen(process.env['API_PORT']!);
 }

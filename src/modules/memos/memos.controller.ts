@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Headers, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { MemosService } from '@src/modules/memos/memos.service';
 import { AuthGuard } from '@src/modules/auth/auth.guard';
 import { CreateMemoDto, FindMemoDto, UpdateMemoDto } from './memos.dto';
 import { getUser, validateAuthState } from '@src/auth';
+import { off } from 'process';
 
 @Controller('memos')
 @UseGuards(AuthGuard)
@@ -12,10 +13,13 @@ export class MemosController {
   @Get()
   async find(
     @Headers('authorization') bearerToken: string,
-    @Body() dto: FindMemoDto,
+    @Query('offset') offset: number,
+    @Query('limit') limit: number,
+    @Query('hashtag') hashtag?: string,
   ) {
     const idToken = await validateAuthState(bearerToken);
     const user = await getUser(idToken.uid);
+    const dto = new FindMemoDto(offset, limit, hashtag);
     return await this.memosService.find(dto, user);
   }
 

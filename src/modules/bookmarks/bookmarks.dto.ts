@@ -12,17 +12,11 @@ export class BookmarkDto {
 }
 
 export class FindBookmarkDto {
-  @IsNotEmpty()
-  @IsNumber()
-  offset: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  limit: number;
-
-  @IsOptional()
-  @IsString()
-  hashtag?: string;
+  constructor(
+    public offset: number,
+    public limit: number,
+    public hashtag?: string,
+  ) {}
 }
 
 export class CreateBookmarkDto {
